@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import Modal from "@/components/Modal";
 
 // 회원 데이터 타입 정의
@@ -124,9 +125,13 @@ function MemberForm({
 
 // 회원 관리 페이지
 export default function MembersPage() {
+  const searchParams = useSearchParams();
   const [members, setMembers] = useState<Member[]>([]);
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState<"add" | "edit" | null>(null);
+  // 홈 바로가기에서 ?action=new 로 진입하면 모달 자동 열기
+  const [modal, setModal] = useState<"add" | "edit" | null>(
+    searchParams.get("action") === "new" ? "add" : null
+  );
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
 

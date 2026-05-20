@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import Modal from "@/components/Modal";
 
 // 보드게임 데이터 타입 정의
@@ -168,10 +169,14 @@ function GameForm({
 
 // 보드게임 관리 페이지
 export default function GamesPage() {
+  const searchParams = useSearchParams();
   const [games, setGames] = useState<Game[]>([]);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [modal, setModal] = useState<"add" | "edit" | null>(null);
+  // 홈 바로가기에서 ?action=new 로 진입하면 모달 자동 열기
+  const [modal, setModal] = useState<"add" | "edit" | null>(
+    searchParams.get("action") === "new" ? "add" : null
+  );
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
 

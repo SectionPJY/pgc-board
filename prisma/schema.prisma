@@ -44,3 +44,12 @@ model Rental {
   game       Game      @relation(fields: [gameId], references: [id])
   member     Member    @relation(fields: [memberId], references: [id])
 }
+
+// 로그인 계정 모델: role이 ADMIN이면 관리자 권한
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String   // bcrypt 해시값 저장
+  role      String   @default("USER") // USER | ADMIN
+  createdAt DateTime @default(now())
+}

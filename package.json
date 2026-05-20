@@ -18,8 +18,10 @@
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.5.0",
+    "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.10.0",
     "date-fns": "^4.2.1",
+    "jose": "^6.2.3",
     "next": "^16.2.6",
     "postcss": "^8.5.15",
     "prisma": "^7.8.0",
@@ -29,6 +31,7 @@
     "typescript": "^6.0.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13"
   }
 }

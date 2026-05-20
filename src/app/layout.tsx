@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getSession } from "@/lib/auth";
+import NavUserMenu from "@/components/NavUserMenu";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,20 +9,22 @@ export const metadata: Metadata = {
   description: "보드게임 대여 및 반납 관리 시스템",
 };
 
-// 내비게이션 메뉴 정의
-const navItems = [
-  { href: "/", label: "홈" },
-  { href: "/games", label: "보드게임 관리" },
-  { href: "/members", label: "회원 관리" },
-  { href: "/rentals", label: "대여/반납" },
-  { href: "/stats", label: "통계" },
-];
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 서버 컴포넌트에서 세션 조회
+  const session = await getSession();
+
+  // 관리자에게만 보이는 메뉴 항목
+  const navItems = [
+    { href: "/games", label: "보드게임 관리", adminOnly: false },
+    { href: "/members", label: "회원 관리", adminOnly: true },
+    { href: "/rentals", label: "대여/반납", adminOnly: false },
+    { href: "/stats", label: "통계", adminOnly: true },
+  ];
+
   return (
     <html lang="ko">
       <body className="bg-gray-50 min-h-screen">
@@ -30,16 +34,28 @@ export default function RootLayout({
             <Link href="/" className="font-bold text-lg whitespace-nowrap">
               🎲 보드게임 대여
             </Link>
-            <div className="flex gap-4 flex-wrap">
-              {navItems.slice(1).map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-indigo-100 hover:text-white hover:bg-indigo-700 px-3 py-1 rounded transition"
-                >
-                  {item.label}
-                </Link>
-              ))}
+
+            {/* 로그인된 경우에만 메뉴 표시 */}
+            {session && (
+              <div className="flex gap-1 flex-wrap flex-1">
+                {navItems
+                  // 일반 사용자는 adminOnly 메뉴 숨김
+                  .filter((item) => !item.adminOnly || session.role === "ADMIN")
+                  .map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-indigo-100 hover:text-white hover:bg-indigo-700 px-3 py-1 rounded transition text-sm"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+              </div>
+            )}
+
+            {/* 우측: 로그인 상태 표시 및 로그아웃 버튼 (클라이언트 컴포넌트) */}
+            <div className="ml-auto">
+              <NavUserMenu session={session} />
             </div>
           </div>
         </nav>

@@ -1,4 +1,5 @@
 const path = require("path");
+const bcrypt = require("bcryptjs");
 const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
 const { PrismaClient } = require("@prisma/client");
 
@@ -24,7 +25,24 @@ async function main() {
     });
   }
 
+  // 기본 계정 생성: 관리자(admin) + 일반 사용자(user)
+  const adminPassword = await bcrypt.hash("admin1234", 12);
+  const userPassword = await bcrypt.hash("user1234", 12);
+
+  await prisma.user.upsert({
+    where: { username: "admin" },
+    update: {},
+    create: { username: "admin", password: adminPassword, role: "ADMIN" },
+  });
+
+  await prisma.user.upsert({
+    where: { username: "user" },
+    update: {},
+    create: { username: "user", password: userPassword, role: "USER" },
+  });
+
   console.log("Seed data created successfully");
+  console.log("기본 계정: admin / admin1234 (관리자), user / user1234 (일반 사용자)");
 }
 
 main()

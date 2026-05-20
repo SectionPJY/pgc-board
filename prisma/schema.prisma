@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 7에서는 datasource의 url을 prisma.config.ts로 이동
+datasource db {
+  provider = "sqlite"
+}
+
+model Game {
+  id               Int      @id @default(autoincrement())
+  name             String
+  description      String?
+  category         String?
+  minPlayers       Int      @default(2)
+  maxPlayers       Int      @default(4)
+  totalQuantity    Int      @default(1)
+  availableQuantity Int     @default(1)
+  imageUrl         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  rentals          Rental[]
+}
+
+model Member {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String?
+  email     String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rentals   Rental[]
+}
+
+model Rental {
+  id         Int       @id @default(autoincrement())
+  gameId     Int
+  memberId   Int
+  rentedAt   DateTime  @default(now())
+  dueDate    DateTime
+  returnedAt DateTime?
+  notes      String?
+  game       Game      @relation(fields: [gameId], references: [id])
+  member     Member    @relation(fields: [memberId], references: [id])
+}

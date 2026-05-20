@@ -1,0 +1,8 @@
+/* Tailwind v4 방식: @import로 불러오기 */
+@import "tailwindcss";
+
+/* 커스텀 전역 스타일 */
+:root {
+  --color-primary: #4f46e5;
+  --color-primary-dark: #4338ca;
+}
